@@ -39,6 +39,7 @@ extern "C"
             //     //QDMI_Device dev = qc->
             //     //QDMI_query_qubit_property(QDMI_Device dev, QDMI_Qubit_property prop, QDMI_Qubit qubit, int* coupling_map);
         }
+        static std::vector<double> timings;
     private:
         int initiateSession();
         static QInfo info;
@@ -50,7 +51,6 @@ extern "C"
         //TODO: Is this needed?
         std::map < int, std::vector <QDMI_Qubit_impl_d >> _qubits;
     };
-    
 }
 
 #endif // QDMI_Parser_HPP

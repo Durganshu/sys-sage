@@ -4,10 +4,11 @@
  */
 
 #include "qdmi-parser.hpp"
+#include <chrono>
 
 QInfo QDMI_Parser::info; 
 QDMI_Session QDMI_Parser::session; 
-
+std::vector<double> QDMI_Parser::timings;
 extern "C" QDMI_Parser::QDMI_Parser()
 {
     initiateSession();
@@ -327,8 +328,17 @@ extern "C" void QDMI_Parser::createQcTopo(Topology *topo)
 extern "C" void QDMI_Parser::createQcTopo(QuantumBackend *backend, QDMI_Device dev)
 {
     backend->SetNumberofQubits(get_num_qubits(dev));
+    
+    auto start = std::chrono::high_resolution_clock::now();
     setQubits(backend, dev);
+    auto end = std::chrono::high_resolution_clock::now();
+    
     setGateSets(backend, dev);
+
+    
+    std::chrono::duration<double, std::milli> duration = end - start;
+    QDMI_Parser::timings.push_back(duration.count());
+    // std::cout << "Time taken by setQubits: " << duration.count() << " milliseconds" << std::endl;
 }
 
 // extern "C" static void refreshQubitProprties(QuantumBackend *qc, Qubit *qubit)
