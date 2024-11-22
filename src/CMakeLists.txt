@@ -36,8 +36,8 @@ set(HEADERS
 
 add_library(sys-sage SHARED ${SOURCES} ${HEADERS})
 
-target_link_libraries(sys-sage PRIVATE qdmi)
-
+find_package(qdmi)
+target_link_libraries(sys-sage PRIVATE qdmi::qdmi)
 
 target_include_directories(sys-sage 
     PUBLIC  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>  
