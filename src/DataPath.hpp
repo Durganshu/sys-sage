@@ -356,8 +356,8 @@ private:
     Component * source; /**< source component of the datapath */
     Component * target; /**< taget component of the datapath */
 
-    const int oriented; /**< orientation of the datapath (SYS_SAGE_DATAPATH_ORIENTED or SYS_SAGE_DATAPATH_BIDIRECTIONAL) */
-    const int dp_type; /**< type of the datapath */
+    int oriented; /**< orientation of the datapath (SYS_SAGE_DATAPATH_ORIENTED or SYS_SAGE_DATAPATH_BIDIRECTIONAL) */
+    int dp_type; /**< type of the datapath */
 
     double bw; /**< Bandwidth from the source(provides the data) to the target(requests the data) */
     double latency; /**< Data load latency from the source(provides the data) to the target(requests the data) */
