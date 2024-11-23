@@ -38,6 +38,7 @@ add_library(sys-sage SHARED ${SOURCES} ${HEADERS})
 
 find_package(qdmi)
 target_link_libraries(sys-sage PRIVATE qdmi::qdmi)
+target_link_libraries(sys-sage PRIVATE qdmi_example_driver cxx_device)
 
 target_include_directories(sys-sage 
     PUBLIC  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>  

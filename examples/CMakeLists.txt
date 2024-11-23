@@ -40,7 +40,7 @@ if(NVIDIA_MIG)
     install(TARGETS nvidia-mig DESTINATION bin/examples)
 endif()
 
-target_link_libraries(qdmi-test PRIVATE
-  qdmi
-  qinfo
-  )
+#target_link_libraries(qdmi-test PRIVATE
+#  qdmi
+#  qinfo
+#  )
