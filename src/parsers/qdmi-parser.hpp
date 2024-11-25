@@ -25,7 +25,7 @@ SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 #pragma once
 
 #include <qdmi/client.h>
-
+#include </home/diogenes/QDMI/examples/driver/qdmi_example_driver.h>
 #include <cassert>
 #include <cstddef>
 #include <map>
