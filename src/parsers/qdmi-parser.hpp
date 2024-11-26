@@ -1,56 +1,147 @@
-/*------------------------------------------------------------------------------
-Copyright 2024 Munich Quantum Software Stack Project
+/**
+* @file qdmi-parser.hpp
+* @brief sys-sage's interface to QDMI.
+*/
 
-Licensed under the Apache License, Version 2.0 with LLVM Exceptions (the
-"License"); you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+#ifndef QDMIParser_HPP
+#define QDMIParser_HPP
 
-https://github.com/Munich-Quantum-Software-Stack/QDMI/blob/develop/LICENSE
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-License for the specific language governing permissions and limitations under
-the License.
-
-SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
-------------------------------------------------------------------------------*/
-
-/** @file
- * @brief A simple example of an implementation of a FoMaC library in C++.
- * @details This file can be used as a template for implementing a figures of
- * merit and constraints library in C++.
- */
-
-#pragma once
-
-#include <qdmi/client.h>
-#include </home/diogenes/QDMI/examples/driver/qdmi_example_driver.h>
-#include <cassert>
-#include <cstddef>
-#include <map>
-#include <string>
-#include <utility>
+#include <iostream>
+#include <string.h>
 #include <vector>
+#include <map>
+#include "sys-sage.hpp"
+#include "Component.hpp"
+#include </home/diogenes/QDMI/examples/driver/qdmi_example_driver.h>
 
-class FoMaC {
-private:
-  QDMI_Device device;
+#include "qdmi/client.h"
 
-  static auto throw_if_error(int status, const std::string &message) -> void;
+#define CHECK_ERR(a,b) { if (a!=QDMI_SUCCESS) { printf("\n[Error]: %i at %s",a,b); return 1; }}
 
-public:
-  explicit FoMaC(QDMI_Device dev) : device(dev) {}
+extern "C"
+{
 
-  [[nodiscard]] auto get_qubits_num() const -> size_t;
+    class QdmiParser
+    {
+    public:
+        QdmiParser();
 
-  [[nodiscard]] auto get_operation_map() const
-      -> std::map<std::string, QDMI_Operation>;
+        /**
+         * Returns all the available backends registered with QDMI.
+         * @return A vector of all the backends with their names and "QDMI_Device" handles
+         */
+        //std::vector<QDMI_Device> get_available_backends();
+        QDMI_Device get_available_backends();
 
-  [[nodiscard]] auto get_sites() const -> std::vector<QDMI_Site>;
+        /**
+         * Checks which backends are available and creates a topology with an object of type "Topology" as their parent.
+         * @param topo - Object of type "Topology", which will be the parent Component of all the quntum backends. 
+         */
+        void createAllQcTopo(Topology *topo);
 
-  [[nodiscard]] auto get_coupling_map() const
-      -> std::vector<std::pair<QDMI_Site, QDMI_Site>>;
+        /**
+         * Checks which backends are available and creates a topology with an object of type "Topology" as their parent.
+         * @returns An object of type "Topology", which will be the parent Component of all the quntum backends. 
+         * @see createAllQcTopo(Topology *topo)
+         */
+        Topology createAllQcTopo();
+        
 
-  [[nodiscard]] auto get_operands_num(const QDMI_Operation &op) const -> size_t;
-};
+        /**
+         * Creates a topology of a single quantum backend corresponding to the provided "QDMI_Device".
+         * @param backend - Object of type "QuantumBackend", storing the topology of a quantum backend.
+         * @param dev - A QDMI_Device for which the topology needs to be created.
+         * @see createQcTopo(Topology *topo)
+         */
+        void createQcTopo(QuantumBackend *backend, QDMI_Device dev);
+
+        /**
+         * Creates a topology of a single quantum backend corresponding to the provided "QDMI_Device".
+         * @param dev - A QDMI_Device for which the topology needs to be created.
+         * @param device_index - Index of the device.
+         * @param device_name - Name of the device.
+         * @returns Object of type "QuantumBackend", storing the topology of a quantum backend.
+         * @see createQcTopo(QuantumBackend *backend, QDMI_Device dev)
+         */
+        QuantumBackend createQcTopo(QDMI_Device dev, int device_index = 0, std::string device_name="");
+
+        size_t get_qubits_num() const;
+
+        std::map<std::string, QDMI_Operation> get_operation_map() const;
+
+        std::vector<std::pair<QDMI_Site, QDMI_Site>> get_coupling_map() const;
+
+        // static void refreshQubitProperties(QDMI_Device dev, Qubit *q)
+        // {
+        //     //Refresh Qubit properties
+        //     QDMI_Qubit qubits;
+        //     int err;
+
+        //     err = QDMI_query_all_qubits(dev, &qubits);
+
+        //     if (err != QDMI_SUCCESS || qubits == NULL)
+        //     {
+        //         std::cout << "   [sys-sage]...............Could not obtain available "
+        //                   << "qubits via QDMI\n";
+        //         return;
+        //     }
+        //     int qubit_index = q->GetId();
+
+        //     // Refreshing Qubit coupling map
+        //     int coupling_map_size; 
+        //     std::vector<int> coupling_mapping;
+        //     coupling_map_size = (&qubits[qubit_index])->size_coupling_mapping;
+        //     coupling_mapping.resize(coupling_map_size);
+        //     std::copy(qubits[qubit_index].coupling_mapping, qubits[qubit_index].coupling_mapping + coupling_map_size, coupling_mapping.begin());
+        //     q->SetCouplingMapping(coupling_mapping, coupling_map_size);
+
+
+        //     // Set all the qubit properties
+        //     int scope;
+        //     // Declare prop as a vector
+        //     std::vector<int> prop{QDMI_T1_TIME, QDMI_T2_TIME, QDMI_READOUT_ERROR, QDMI_READOUT_LENGTH};
+        //     std::array<std::string, 4> properties{"T1", "T2", "readout_error", "readout_length"};
+        //     double value;
+        //     for (size_t i = 0; i < 4; ++i)
+        //     {
+        //         // QDMI_Qubit_property prop_index;
+        //         QDMI_Qubit_property prop_index = new (QDMI_Qubit_property_impl_t);
+        //         prop_index->name = prop[i];
+        //         int err = QDMI_query_qubit_property_exists(dev, &qubits[qubit_index], prop_index, &scope);
+        //         if(err)
+        //         {
+        //             std::cout << "   [sys-sage]...............Queried property doesn't exist: " << i <<"\n";
+        //             continue;
+        //         }
+        //         err = QDMI_query_qubit_property_type(dev, &qubits[qubit_index], prop_index);
+        //         if(prop_index->type == QDMI_DOUBLE){
+        //             err = QDMI_query_qubit_property_d(dev, &qubits[qubit_index], prop_index, &value);
+        //             if(err)
+        //             {
+        //                 std::cout << "   [sys-sage]...............Unable to query property: " << i <<"\n";
+        //                 continue;
+        //             }
+        //             //std::cout << "   [sys-sage]...............Value of " << properties[i] << ": " << value << "\n";
+        //         }
+        //         delete prop_index;
+
+        //     }
+
+        //     q->SetProperties(qubits[qubit_index].t1, qubits[qubit_index].t2, qubits[qubit_index].readout_error, qubits[qubit_index].readout_length);
+        // }
+    private:
+        size_t num_devices;
+        QDMI_Device device;
+        int initiateSession();
+        //static QInfo info;
+        static QDMI_Session session;
+        //void getCouplingMapping(QDMI_Device dev, QDMI_Qubit qubit, std::vector<int> &coupling_mapping, int &coupling_map_size);
+        //void getQubitProperties(QDMI_Device dev, QDMI_Qubit qubit);
+        void setQubits(QuantumBackend *backend, QDMI_Device dev);
+        void setGateSets(QuantumBackend *backend, QDMI_Device dev);
+
+    };
+    
+}
+
+#endif // QDMIParser_HPP

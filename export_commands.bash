@@ -1,0 +1,2 @@
+export LIBRARY_PATH=/home/diogenes/QDMI/build/examples/driver:/home/diogenes/QDMI/build/examples/device:/home/diogenes/QDMI/build/examples/device/cxx
+export LIBRARY_PATH=$LIBRARY_PATH:/home/diogenes/QDMI/build/examples/device/cxx:/home/diogenes/QDMI/build/examples/device/c

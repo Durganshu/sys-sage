@@ -13,39 +13,19 @@ export PROP_IBM=/home/diogenes/sys-sage/build/_deps/backends-src/tests/ibm_prob.
 
 int main()
 {
-    std::cout << std::setprecision(15);
-    auto ret = QDMI_Driver_init();
-    if(ret == QDMI_SUCCESS)
-        std::cout << "Driver Initialized\n";
-    else
-        std::cout << "Error starting the driver\n";
+    //std::cout << std::setprecision(15);
     
-    QDMI_Session session;    
-    ret =  QDMI_session_alloc(&session);
-    if(ret == QDMI_SUCCESS)
-        std::cout << "Session allocated\n";
-    else
-        std::cout << "Error allocating the session\n";
-    
-    QDMI_Device devices;
-    size_t num_entries = 1;
-    size_t num_devices;
-    QDMI_session_get_devices(session, num_entries, &devices, &num_devices);
-    if(ret == QDMI_SUCCESS)
-        std::cout << "Found " << num_devices << " devices.\n";
-    else
-        std::cout << "Unable to find any device.\n";
-    FoMaC fomac(devices);
-    std::cout << fomac.get_qubits_num() << "\n";
+    //FoMaC fomac(devices);
+    //std::cout << fomac.get_qubits_num() << "\n";
     // Create an instance of the interface
     // To-Do: Consider QdmiParser as a static class
-    // QdmiParser qdmi;
+    QdmiParser qdmi;
 
     // // Use QdmiParser to create the topology of either all the backends or one of the backends
     // /*******************************************Method 1**********************************************/
 
-    // Topology* qc_topo = new Topology();
-    // qdmi.createAllQcTopo(qc_topo);
+    Topology* qc_topo = new Topology();
+    qdmi.createAllQcTopo(qc_topo);
 
     // cout << "---------------- Printing the configuration of IBM Backend----------------" << endl;
     // qc_topo->PrintSubtree();
